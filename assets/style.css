@@ -59,6 +59,7 @@ header {
     background: rgba(0,0,0,0.1); 
     backdrop-filter: blur(4px); 
     transition: height 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
 .container{
@@ -82,9 +83,10 @@ nav{
 }
 
 .menu-icons i{
-    font-size: 3.5rem;
+    font-size: 3rem;
     color: white;
     cursor:pointer;
+    z-index: 2100;
 }
 
 .close i{
@@ -97,13 +99,13 @@ nav{
     background-color: green;
     position: fixed;
     top: 0;
-    right: -26rem;
+    right: -100rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 1500;
-    transition: all 650ms ease-in-out;
+    transition: all 0.5 ease-in-out;
 }
 
 .nav-list.active{
@@ -134,6 +136,7 @@ nav{
     url('../assets/images/willaFront.jpg') center no-repeat;
     background-size: cover;
     position: relative;
+    padding-top: 6rem;
 }
 
 .hero::before{
