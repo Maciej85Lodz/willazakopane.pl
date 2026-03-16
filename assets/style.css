@@ -38,6 +38,9 @@ img{
 section{
     padding: 5rem 0;
 }
+.gtranslate_wrapper {
+    z-index: 9999;
+}
 
 /* body{
     background-color:green;
