@@ -37,3 +37,34 @@ const msnry = new Macy({
         header.style.background = 'rgba(0,0,0,0.5)';
     }
 });
+// podstawowy URL RoomAdmin
+const baseRoomAdminUrl = 'https://roomadmin.pl/widget/reservation-v2/start?fh=10593f2b1434dc58d459b5eb6102eb5823eda43e&style=%7B%22color_accent%22%3A%22%23A1195B%22%2C%22color_bg%22%3A%22%23FFFFFF%22%7D';
+
+let currentLang = 'pl'; // domyślny język
+
+// funkcja aktualizacji iframe
+function updateRoomAdminIframe(lang) {
+    const iframe = document.getElementById('ra-reservation-form-v2');
+    if(!iframe) return;
+
+    // zmiana src tylko jeśli język się zmienił
+    if(iframe.dataset.lang !== lang){
+        iframe.src = `${baseRoomAdminUrl}&lang=${lang}`;
+        iframe.dataset.lang = lang; // zapamiętaj aktualny język
+    }
+}
+
+// polling języka GTranslate co 500ms
+setInterval(() => {
+    const gtSelect = document.querySelector('.gtranslate_wrapper select'); // standardowy select w widgetach GTranslate
+    if(gtSelect){
+        const lang = gtSelect.value; // np. 'pl', 'en', 'de'
+        if(lang !== currentLang){
+            currentLang = lang;
+            updateRoomAdminIframe(lang);
+        }
+    }
+}, 500);
+
+// inicjalizacja na starcie
+updateRoomAdminIframe(currentLang);
