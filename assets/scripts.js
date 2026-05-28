@@ -100,7 +100,7 @@ window.addEventListener('load', () => {
     }
 // --- Powitanie YANOSIK-a przy otwarciu ---
 setTimeout(()=>{
-    addMessage("Cześć! Jestem YANOSIK. Przekaże twoje pytania do obsługi obiektu. W czym mogę pomóc?", 'bot');
+    addMessage("Cześć! Jestem YANOSIK. Na ten moment jeszcze trwają pracę nad moimi możliwościami. Już nie długo będę mógł Ci pomóc i odpowiedzieć na twoje pytania. Póki co proszę skorzystaj z formularza kontaktowego na dole strony. Dziękuję.", 'bot');
 }, 1500);
     closeBtn.addEventListener('click', ()=>{
         widget.classList.remove('open');
