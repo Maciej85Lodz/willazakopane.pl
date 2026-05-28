@@ -2,7 +2,7 @@
 /* Created by maciejwolejszo.pl All rights reserved.  */
 
 const selectElement = (s) => document.querySelector(s);
-
+emailjs.init("0tEZFrnptUaNPU774");
 //Open The menu on click
 selectElement('.open').addEventListener('click', () =>{
     selectElement('.nav-list').classList.add('active');
@@ -67,11 +67,8 @@ setInterval(() => {
 }, 500);
 
 //<-----YANOSIK ChatBot----------->
-// inicjalizacja na starcie
-updateRoomAdminIframe(currentLang);
 
 window.addEventListener('load', () => {
-
     const widget = document.getElementById('yanosik-widget');
     const closeBtn = document.getElementById('yanosik-close');
     const sendBtn = document.getElementById('yanosik-send');
@@ -79,65 +76,238 @@ window.addEventListener('load', () => {
     const messages = document.getElementById('yanosik-messages');
 
     if(!widget) return;
-
+    // obsługiwane języki
     const supportedLangs = ["pl","en","de","it","es","fr","hu"];
     let currentLang = 'pl';
+    // etapy rozmowy
+    let chatStep = 1;
+    let userMessage = '';
+    let userName = '';
+    let userEmail = '';
 
-    // --- otwarcie widgetu po 1s ---
-    setTimeout(()=>{ widget.classList.add('open'); }, 1000);
+    // automatyczne otwarcie widgetu
+    setTimeout(() => {
+        widget.classList.add('open');
+    }, 1200);
 
+    // pobieranie aktualnego języka GTranslate
+    function getCurrentLang(){
+        const gtSelect =
+            document.querySelector('.gtranslate_wrapper select');
+        if(gtSelect && supportedLangs.includes(gtSelect.value)){
+            return gtSelect.value;
+        }
+        return 'pl';
+    }
+
+    // wymuszenie odświeżenia tłumaczeń GTranslate
+    function refreshTranslations(){
+        try{
+            const gtSelect =
+                document.querySelector('.gtranslate_wrapper select');
+            if(gtSelect){
+                const lang = gtSelect.value;
+                if(window.doGTranslate){
+                    window.doGTranslate(lang);
+                }
+            }
+        } catch(e){
+            console.log(e);
+        }
+    }
+    // dodawanie wiadomości
     function addMessage(text, sender='user'){
         const msg = document.createElement('div');
         msg.textContent = text;
         msg.style.margin = '0.5rem 0';
-        msg.style.padding = '0.5rem';
-        msg.style.borderRadius = '0.5rem';
+        msg.style.padding = '0.7rem';
+        msg.style.borderRadius = '0.8rem';
         msg.style.whiteSpace = 'pre-line';
-        msg.style.background = sender==='user' ? '#A1195B' : '#eee';
-        msg.style.color = sender==='user' ? '#fff' : '#000';
-        msg.style.alignSelf = sender==='user' ? 'flex-end' : 'flex-start';
+        msg.style.maxWidth = '85%';
+        msg.style.wordWrap = 'break-word';
+        msg.style.fontSize = '0.92rem';
+        msg.style.background =
+            sender === 'user'
+            ? '#A1195B'
+            : '#f1f1f1';
+        msg.style.color =
+            sender === 'user'
+            ? '#fff'
+            : '#000';
+        msg.style.alignSelf =
+            sender === 'user'
+            ? 'flex-end'
+            : 'flex-start';
         messages.appendChild(msg);
         messages.scrollTop = messages.scrollHeight;
+        refreshTranslations();
     }
-// --- Powitanie YANOSIK-a przy otwarciu ---
-setTimeout(()=>{
-    addMessage("Cześć! Jestem YANOSIK. \n\nNa ten moment jeszcze trwają pracę nad moimi możliwościami. Już nie długo będę mógł Ci pomóc i odpowiedzieć na twoje pytania. \n\nPóki co proszę skorzystaj z formularza kontaktowego na dole strony. \n\nDziękuję.", 'bot');
-}, 1500);
-    closeBtn.addEventListener('click', ()=>{
+    // powitanie
+    setTimeout(() => {
+        addMessage(
+`Cześć! Jestem YANOSIK.
+\n\nNa ten moment jeszcze trwają prace nad moimi możliwościami. \n\nNie mogę odpowiadać jeszcze na twoje pytania.
+Za to mogę przekazać twoje pytania do obsługi obiektu.\n\n
+W czym mogę pomóc?`,
+        'bot');
+
+    }, 1800);
+
+    // zamknięcie widgetu
+    closeBtn.addEventListener('click', () => {
         widget.classList.remove('open');
     });
 
-    function getCurrentLang(){
-        const gtSelect = document.querySelector('.gtranslate_wrapper select');
-        if(gtSelect && supportedLangs.includes(gtSelect.value)) return gtSelect.value;
-        return 'pl';
-    }
+    // ENTER = wyślij
+    input.addEventListener('keypress', function(e){
 
-    sendBtn.addEventListener('click', ()=>{
+        if(e.key === 'Enter'){
+            sendBtn.click();
+        }
+
+    });
+
+    // wysyłanie wiadomości
+    sendBtn.addEventListener('click', () => {
+
         const text = input.value.trim();
+
         if(!text) return;
 
         currentLang = getCurrentLang();
+
         addMessage(text, 'user');
 
-        console.log(`Wiadomość użytkownika (${currentLang}):`, text);
+        // STEP 1 -> pytanie użytkownika
+        if(chatStep === 1){
 
-        setTimeout(()=>{
-            const replyTexts = {
-                'pl':'Dziękujemy za wiadomość. Wkrótce odpowiemy.',
-                'en':'Thank you for your message. We will respond soon.',
-                'de':'Vielen Dank für Ihre Nachricht. Wir werden uns bald melden.',
-                'it':'Grazie per il messaggio. Risponderemo presto.',
-                'es':'Gracias por su mensaje. Responderemos pronto.',
-                'fr':'Merci pour votre message. Nous répondrons bientôt.',
-                'hu':'Köszönjük az üzenetet. Hamarosan válaszolunk.'
-            };
-            addMessage(replyTexts[currentLang] || replyTexts['pl'], 'bot');
-        }, 700);
+            userMessage = text;
 
-        input.value='';
+            setTimeout(() => {
+
+                addMessage(
+                    'Proszę podaj swoje imię.',
+                    'bot'
+                );
+
+            }, 700);
+
+            chatStep = 2;
+
+            input.value = '';
+
+            return;
+        }
+
+        // STEP 2 -> imię
+        if(chatStep === 2){
+
+            userName = text;
+
+            setTimeout(() => {
+
+                addMessage(
+                    'Proszę podaj swój adres e-mail.',
+                    'bot'
+                );
+
+            }, 700);
+
+            chatStep = 3;
+
+            input.value = '';
+
+            return;
+        }
+
+        // STEP 3 -> email + wysyłka
+        if(chatStep === 3){
+
+            const emailRegex =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // błędny email
+            if(!emailRegex.test(text)){
+
+                addMessage(
+                    'Proszę podać poprawny adres e-mail.',
+                    'bot'
+                );
+
+                return;
+            }
+
+            userEmail = text;
+
+            // loader
+            const typing = document.createElement('div');
+
+            typing.textContent = 'YANOSIK pisze...';
+
+            typing.style.fontSize = '0.8rem';
+            typing.style.opacity = '0.7';
+            typing.style.margin = '0.5rem';
+
+            messages.appendChild(typing);
+
+            messages.scrollTop = messages.scrollHeight;
+
+            refreshTranslations();
+
+            // EMAILJS SEND
+            emailjs.send(
+
+                "service_vzoajel",
+                "template_6idf45h",
+
+                {
+                    name: userName,
+                    email: userEmail,
+                    message: userMessage,
+                    lang: currentLang,
+                    time: new Date().toLocaleString()
+                }
+
+            ).then(function(response){
+
+                console.log("YANOSIK MAIL OK", response);
+
+            }).catch(function(error){
+
+                console.error("YANOSIK MAIL ERROR", error);
+
+            });
+
+            // odpowiedź końcowa
+            setTimeout(() => {
+
+                typing.remove();
+
+                addMessage(
+`Dziękujemy za wiadomość.
+
+Obsługa obiektu otrzymała Twoje zgłoszenie i odpowie możliwie najszybciej.`,
+                'bot');
+
+            }, 1400);
+
+            // reset rozmowy
+            chatStep = 1;
+
+            userMessage = '';
+            userName = '';
+            userEmail = '';
+
+            input.value = '';
+        }
+
     });
 
-    setInterval(()=>{ currentLang = getCurrentLang(); }, 500);
+    // aktualizacja języka
+    setInterval(() => {
+
+        currentLang = getCurrentLang();
+
+    }, 500);
 
 });
