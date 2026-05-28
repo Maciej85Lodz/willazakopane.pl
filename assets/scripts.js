@@ -286,7 +286,7 @@ W czym mogę pomóc?`,
                 addMessage(
 `Dziękujemy za wiadomość.
 
-Obsługa obiektu otrzymała Twoje zgłoszenie i odpowie możliwie najszybciej.`,
+Obsługa obiektu otrzymała Twoje zgłoszenie i odpowie na podany adres mailowy możliwie najszybciej.`,
                 'bot');
 
             }, 1400);
