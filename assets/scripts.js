@@ -92,6 +92,7 @@ window.addEventListener('load', () => {
         msg.style.margin = '0.5rem 0';
         msg.style.padding = '0.5rem';
         msg.style.borderRadius = '0.5rem';
+        msg.style.whiteSpace = 'pre-line';
         msg.style.background = sender==='user' ? '#A1195B' : '#eee';
         msg.style.color = sender==='user' ? '#fff' : '#000';
         msg.style.alignSelf = sender==='user' ? 'flex-end' : 'flex-start';
@@ -100,7 +101,7 @@ window.addEventListener('load', () => {
     }
 // --- Powitanie YANOSIK-a przy otwarciu ---
 setTimeout(()=>{
-    addMessage("Cześć! Jestem YANOSIK. Przekaże twoje pytania do obsługi obiektu. W czym mogę pomóc?", 'bot');
+    addMessage("Cześć! Jestem YANOSIK. \n\nNa ten moment jeszcze trwają pracę nad moimi możliwościami. Już nie długo będę mógł Ci pomóc i odpowiedzieć na twoje pytania. \n\nPóki co proszę skorzystaj z formularza kontaktowego na dole strony. \n\nDziękuję.", 'bot');
 }, 1500);
     closeBtn.addEventListener('click', ()=>{
         widget.classList.remove('open');
