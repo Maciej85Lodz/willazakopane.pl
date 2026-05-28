@@ -66,5 +66,77 @@ setInterval(() => {
     }
 }, 500);
 
+//<-----YANOSIK ChatBot----------->
 // inicjalizacja na starcie
 updateRoomAdminIframe(currentLang);
+
+window.addEventListener('load', () => {
+
+    const widget = document.getElementById('yanosik-widget');
+    const closeBtn = document.getElementById('yanosik-close');
+    const sendBtn = document.getElementById('yanosik-send');
+    const input = document.getElementById('yanosik-input');
+    const messages = document.getElementById('yanosik-messages');
+
+    if(!widget) return;
+
+    const supportedLangs = ["pl","en","de","it","es","fr","hu"];
+    let currentLang = 'pl';
+
+    // --- otwarcie widgetu po 1s ---
+    setTimeout(()=>{ widget.classList.add('open'); }, 1000);
+
+    function addMessage(text, sender='user'){
+        const msg = document.createElement('div');
+        msg.textContent = text;
+        msg.style.margin = '0.5rem 0';
+        msg.style.padding = '0.5rem';
+        msg.style.borderRadius = '0.5rem';
+        msg.style.background = sender==='user' ? '#A1195B' : '#eee';
+        msg.style.color = sender==='user' ? '#fff' : '#000';
+        msg.style.alignSelf = sender==='user' ? 'flex-end' : 'flex-start';
+        messages.appendChild(msg);
+        messages.scrollTop = messages.scrollHeight;
+    }
+// --- Powitanie YANOSIK-a przy otwarciu ---
+setTimeout(()=>{
+    addMessage("Cześć! Jestem YANOSIK. Przekaże twoje pytania do obsługi obiektu. W czym mogę pomóc?", 'bot');
+}, 1500);
+    closeBtn.addEventListener('click', ()=>{
+        widget.classList.remove('open');
+    });
+
+    function getCurrentLang(){
+        const gtSelect = document.querySelector('.gtranslate_wrapper select');
+        if(gtSelect && supportedLangs.includes(gtSelect.value)) return gtSelect.value;
+        return 'pl';
+    }
+
+    sendBtn.addEventListener('click', ()=>{
+        const text = input.value.trim();
+        if(!text) return;
+
+        currentLang = getCurrentLang();
+        addMessage(text, 'user');
+
+        console.log(`Wiadomość użytkownika (${currentLang}):`, text);
+
+        setTimeout(()=>{
+            const replyTexts = {
+                'pl':'Dziękujemy za wiadomość. Wkrótce odpowiemy.',
+                'en':'Thank you for your message. We will respond soon.',
+                'de':'Vielen Dank für Ihre Nachricht. Wir werden uns bald melden.',
+                'it':'Grazie per il messaggio. Risponderemo presto.',
+                'es':'Gracias por su mensaje. Responderemos pronto.',
+                'fr':'Merci pour votre message. Nous répondrons bientôt.',
+                'hu':'Köszönjük az üzenetet. Hamarosan válaszolunk.'
+            };
+            addMessage(replyTexts[currentLang] || replyTexts['pl'], 'bot');
+        }, 700);
+
+        input.value='';
+    });
+
+    setInterval(()=>{ currentLang = getCurrentLang(); }, 500);
+
+});

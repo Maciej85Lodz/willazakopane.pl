@@ -746,7 +746,68 @@ background-color: #d7d4ed;
     0% { -webkit-transform:translateX(0); padding-left:110%; }
     100% { -webkit-transform:translateX(-100%); padding-left:110%; }
   }
+/* YANOSIK Chatbot */
+#yanosik-widget {
+    position: fixed;
+    bottom: 2rem;
+    right: -350px; /* start ukryty */
+    width: 300px;
+    max-width: 90%;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    flex-direction: column;
+    z-index: 5000;
+    overflow: hidden;
+    transition: right 0.5s ease-in-out;
+}
 
+#yanosik-widget.open { right: 2rem; } /* animacja wysuwania */
+
+#yanosik-header {
+    background: #A1195B;
+    color: white;
+    padding: 0.8rem 1rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#yanosik-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 0.5rem;
+}
+
+#yanosik-messages {
+    height: 250px;
+    overflow-y: auto;
+    padding: 0.5rem 1rem;
+    background: #f7f7f7;
+}
+
+#yanosik-input-area {
+    display: flex;
+    border-top: 1px solid #ddd;
+}
+
+#yanosik-input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: none;
+    outline: none;
+}
+
+#yanosik-send {
+    background: #A1195B;
+    color: white;
+    border: none;
+    padding: 0 1rem;
+    cursor: pointer;
+}
 /*Licence*/
 
 /*All right reserved Willa Pod Banderą / maciejwolejszo.pl*/
